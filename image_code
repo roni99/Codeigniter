@@ -1,0 +1,52 @@
+<form class="form-horizontal" method="post" action="<?php print base_url()?>Super_admin/slider" enctype="multipart/form-data">
+    <div class="form-group">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-6">
+            <input type="file" name="userfile" class="form-control" id="inputPassword3" placeholder="" required>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <button type="submit" name="submit" class="btn btn-default">Submit</button>
+        </div>
+    </div>
+</form>
+=========controller===================
+public function slider()
+    {
+        $data=array();
+       /*<-------image upload-------->*/
+        $config['upload_path'] = 'images/slider_image/';
+        $config['allowed_types']= 'gif|jpg|png';
+        $config['max_size']= 5000;
+
+        $this->load->library('upload', $config);
+        $this->upload->initialize($config);
+        $error='';
+        $fdata=array();
+        if ( ! $this->upload->do_upload('userfile'))
+        {
+            $error =$this->upload->display_errors();
+            print $error;
+        }
+        else
+        {
+            $fdata= $this->upload->data();
+            $data['image']=$config['upload_path'].$fdata['file_name'];
+        }
+        /*<--------image upload end------->*/
+
+        $this->Super_admin_model->save_slider($data);
+        $sdata=array();
+        $sdata['message']="Slider saved success";
+        $this->session->set_userdata($sdata);
+        redirect('Super_admin/add_slider');
+    }
+=============model====================
+ public function save_slider($data)
+    {
+      $this->db->insert('slider',$data);
+    }
+
+
+
