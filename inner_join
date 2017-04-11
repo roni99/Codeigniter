@@ -1,0 +1,25 @@
+
+//==Model==//
+public function view_product_info()
+    {
+        $this->db->select('*');
+        $this->db->from('product');
+        $this->db->join('category', 'category.id = product.categoryid');
+        $this->db->join('band', 'band.id = product.bandid');
+        $value=$this->db->get();
+        $result=$value->result();
+        return $result;
+    }
+    public function edit_product_info($id)
+    {
+        print $id;
+        $this->db->select('product.id as id,product.title as title,product.prise as prise,product.image as image,category.category_name as category,band.name as band');
+        $this->db->from('product','category','band');
+        $this->db->join('category', 'category.id = product.categoryid');
+        $this->db->join('band', 'band.id = product.bandid');
+        $this->db->where('product.id',$id);
+        $value=$this->db->get();
+        $result=$value->row();
+        var_dump($result);
+        exit();
+    }
