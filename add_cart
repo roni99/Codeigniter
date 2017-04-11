@@ -1,0 +1,328 @@
+<!--1st view product-->
+----------------------------------------------------page-1 product view-------------------------------------------------------------
+<div class="overlay-content">
+<form method="post" action="<?php print base_url()?>Cart/add_cart" enctype="multipart/form-data">
+    <input type="hidden" name="id" value="<?php print $pro->id;?>">
+    <input type="hidden" name="quantity" value="1" min="1" class="form-control">
+<h2><?php print $pro->prise;?>.TK</h2>
+<p><?php print $pro->title;?></p>
+<input type="submit" name="submit" value="Add to Cart">
+</form>
+</div>
+
+--------------------------------------------------page-2- show cart---------------------------------------------------------------
+ 
+<div class="row">
+        <table class="table table-bordered" style="border-style:dotted: ">
+            <tr><th>Details</th><th>Title</th><th>Quantity</th><th>Price</th><th>Total Prise</th><th>Update && Remove</th></tr>
+            <?php
+            $contents=$this->cart->contents();
+            //print '<pre>';
+            //print_r($contents);
+            //exit();
+            foreach ($contents as $items){
+            ?>
+                <form method="post" action="<?php print base_url()?>Cart/cart_update">
+                    <tr class="item">
+                        <td>
+                            <img src="<?php print base_url($items['image']);?>" height="150" width="150">
+                        </td>
+                        <td><p><?php print $items['name'];?></p></td>
+                        <td><input type="text" name="qty" value="<?php print $items['qty'];?>"></td>
+                            <input type="hidden" name="rowid" value="<?php print $items['rowid']?>">
+                        <td><p><?php print $items['price'];?></p></td>
+                        <td><p><?php print $items['subtotal'];?></p></td>
+                        <td><input type="submit" name="submit" value="Update">
+                            <a href="<?php print base_url()?>Cart/cart_remove/<?php print $items['rowid'];?>">Remove</a></td>
+                    </tr>
+
+                </form>
+            <?php }?>
+        </table>
+
+        <div class="2"></div>
+        <div class="8">
+            Enter Your Coupon Here  <input type="text" name="coupon" value="">
+            <input type="submit" name="submit" value="Submit">
+        </div>
+        <div class="2"></div>
+
+    <div class="row">
+        <div class="col-md-9"></div>
+        <div class="col-md-3">
+        <table>
+            <tbody>
+            <tr>
+                <td colspan="5"></td>
+                <td class="right"><b>TOTAL : </b></td>
+                <td class="right"> <?php print $this->cart->total();?> .TK</td>
+            </tr>
+            <tr>
+                <td colspan="5"></td>
+                <td class="right"><b>VAT : </b>10% </td>
+                <td class="right">
+                    <?php
+                    $vat=($this->cart->total()*10)/100;
+                    print $vat;
+                    ?>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="5"></td>
+                <td class="right"><b> GRAND TOTAL : </b> </td>
+                <td class="right">
+                    <?php
+                    $total=$this->cart->total();
+                    print $total+$vat;
+                    ?>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        </div>
+    </div>
+    <a href="<?php print base_url()?>Welcome/" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Continue Shopping</a>&nbsp;
+    <a href="<?php print base_url()?>Cart/payment" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Checkout</a>
+</div>
+------------------------------------------page 3 payment_method---------------------------------------------------
+<style type="text/css">
+    .containerr{
+        border:1px solid grey;
+        margin-left: 20px;
+        padding:20px;
+    }
+</style>
+<?php
+$id=$this->session->userdata('id');
+if($id == NULL)
+{
+    redirect('Welcome/login');
+}
+?>
+<div class="containerr">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+            <form method="post" action="<?php print base_url()?>Cart/customer_info">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h3>Payment Method</h3>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <input type="number" name="number" value="" class="form-control" placeholder="Contact Number" required>
+                    </div>
+                        <div class="col-md-3">
+                            <input type="number" name="alternate_number" value="" class="form-control" PLACEHOLDER="Alternate Number" required>
+                        </div>
+                </div><br>
+                <div class="row">
+                    <div class="col-md-6">
+                         <input type="text" name="address" value="" class="form-control" placeholder="Enter Your Address" required>
+                    </div>
+                </div><br>
+                <div class="row">
+                    <div class="col-md-2">
+                        <p> Cash-on Delivery</p><input type="radio" name="payment_method" value="delivery" class="form-control" checked>
+                    </div>
+                        <div class="col-md-2">
+                            <p> Cash-on Bikash</p> <input type="radio" name="payment_method" value="bikash" class="form-control">
+                        </div>
+                    <div class="col-md-2">
+                        <p>Debit/Credit Card</p> <input type="radio" name="payment_method" value="card" class="form-control">
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-md-6">
+                        <select name="location" class="form-control" required>
+                            <option value="">Select Your Location</option>
+                            <option value="dhaka">Dhaka</option>
+                            <option value="chittagong">Chittagong</option>
+                            <option value="feni">Feni</option>
+                            <option value="khulna">Khulna</option>
+                            <option value="comilla">Comilla</option>
+                        </select>
+                    </div>
+                </div>
+                <br><br>
+                <div class="row">
+                    <div class="col-md-6">
+                        <input type="submit" name="submit" value="Enter Next Step" class="form-control">
+                    </div>
+                </div><br><br>
+            </form>
+            </div>
+        </div>
+    </div>
+</div>
+<br><br>
+----------------------------------------page 4 order--------------------------------------------------------------
+<?php
+$id=$this->session->userdata('id');
+if($id == NULL)
+{
+    redirect('Welcome/login');
+}
+?>
+<form method="post" action="<?php print base_url()?>Cart/order_details" enctype="multipart/form-data">
+    <table class="table table-bordered" style="border-style:dotted: ">
+        <tr><h1>Review Order</h1></tr><br>
+        <tr><th>Details</th><th>Title</th><th>Quantity</th><th>Price</th><th>Total Prise</th></tr>
+        <?php
+        $contents=$this->cart->contents();
+		
+        foreach ($contents as $items){
+        ?>
+        <tr>
+            <td><input type="hidden" name="product_id" value="<?php print $items['id'];?>">
+                <img src="<?php print base_url()?><?php print $items['image'];?>" width="100" height="100"/>
+            </td>
+            <td><input type="text" name="title" value="<?php print $items['name'];?>"></td>
+            <td><input type="text" name="qty" value="<?php print $items['qty'];?>" ></td>
+            <td><input type="text" name="price" value="<?php print $items['price'];?>" ></td>
+            <td><input type="text" name="subtotal" value="<?php print $items['subtotal'];?>" ></td>
+        </tr>
+        <?php }?>
+    </table>
+
+    <input type="submit" name="submit" value="Order Confirm" class="form-control">
+</form>
+    <br><br><br>
+<!---------------------------------------2nd controller------------------------------------------------------------>
+public function __construct()
+    {
+        parent::__construct();
+            //$this->load->library('cart');
+    }
+
+    public function add_cart()
+    {
+        $id=$this->input->post('id',true);
+        $quantiti=$this->input->post('quantity',true);
+        $values=$this->Cart_model->add_cart_info($id);
+         //$id=$values->id;
+         //$title=$values->title;
+        // $prise=$values->prise;
+
+       // print '<pre>';
+        //print_r($values);
+       // exit();
+        $data = array(
+            'id'      => $values->id,
+            'qty'     => $quantiti,
+            'price'   => $values->prise,
+            'name'    => $values->title,
+            'image'    => $values->image
+            //'options' => array('Size' => 'L', 'Color' => 'Red')
+        );
+
+       if($this->cart->insert($data))
+            redirect('Cart/show_cart');
+       else
+           print 'wrong';
+
+    }
+        public function show_cart()
+    {
+        $data=array();
+        $data['features']=$this->load->view('pages/show_cart','',true);
+        $this->load->view('master',$data);
+    }
+    public function cart_update()
+    {
+        $qty=$this->input->post('qty');
+        $rowid=$this->input->post('rowid');
+        $data = array(
+            'rowid' => $rowid,
+            'qty'   => $qty
+        );
+        $this->cart->update($data);
+        redirect('Cart/show_cart');
+    }
+    public function cart_remove($rowid)
+    {
+        $data = array(
+            'rowid' => $rowid,
+            'qty'   =>0
+        );
+        $this->cart->update($data);
+        redirect('Cart/show_cart');
+    }
+
+    public function payment()
+    {
+        $data=array();
+        $data['features']=$this->load->view('pages/payment',$data,true);
+        $this->load->view('master',$data);
+    }
+    public function customer_info()
+    {
+		$id=$this->session->userdata('id');
+		//print $id;
+		//exit();		
+        $data=array();
+		$data['customer_id']=$id;
+        $data['number']=$this->input->post('number');
+        $data['alternet_number']=$this->input->post('alternate_number');
+        $data['address']=$this->input->post('address');
+        $data['payment_method']=$this->input->post('payment_method');
+        $data['location']=$this->input->post('location');
+
+        $this->Cart_model->customer_info_details($data);
+        $sdata=array();
+        $sdata['order_id']=$this->db->insert_id($sdata);
+        $this->session->set_userdata();
+        redirect('Cart/order_confirm');
+    }
+    public function order_confirm()
+    {
+        $data=array();
+       // $data['order_details']=$this->Cart_model->order_details();
+        $data['features']=$this->load->view('pages/order',$data,true);
+        $this->load->view('master',$data);
+    }
+    public function order_details()
+    {
+		$id=$this->session->userdata('id');
+		//print $id;
+		//exit();
+        $data=array();
+        $data['customer_id']=$id;
+        $data['product_id']=$this->input->post('product_id');
+		 $data['product_title']=$this->input->post('title');
+        $data['product_qty']=$this->input->post('qty');
+        $data['product_price']=$this->input->post('price');
+        $data['product_subtotal']=$this->input->post('subtotal');
+
+        $this->Cart_model->order_confirm($data);
+        $sdata=array();
+        //$sdata['order_id']=$this->db->insert_id($sdata);
+		$sdata['message']="Your Order Confirm Successfully";
+        $this->session->set_userdata($sdata);
+        redirect('Welcome/login');
+    }
+    
+<!--3rd Model-->
+ public function add_cart_info($id)
+    {
+        $this->db->select('*');
+        $this->db->from('product');
+        $this->db->where('id',$id);
+        $result=$this->db->get();
+        $value=$result->row();
+      //  print '<pre>';
+       // print_r($value);
+       // exit();
+        return $value;
+    }
+    public function customer_info_details($data)
+    {
+        $this->db->insert('order_info',$data);
+    }
+   
+	public function order_confirm($data)
+	{
+		 $this->db->insert('order_confirm',$data);
+	}
