@@ -1,0 +1,86 @@
+====view=====
+<div class="control-group">
+<label class="control-label" for="userfile">Image</label>
+<div class="controls">
+  <input type="file" name="userfile" id="company" class="form-control">
+</div>
+  <img src="<?php print base_url().'/'.$content->image;?>" width="200">
+</div>
+
+===Controller===
+public function edit_product_save(){
+		$id=$this->input->post('id');
+		$data=array();
+		  
+		$config['upload_path'] = 'assets/admin/product_image/';
+        $config['allowed_types']= 'gif|jpg|png|jpeg';
+        $config['max_size']= 5000;
+
+        $this->load->library('upload', $config);
+        $this->upload->initialize($config);
+        $error='';
+        $fdata=array();
+        if ( ! $this->upload->do_upload('userfile'))
+        {
+            $error =$this->upload->display_errors();
+            print $error;
+        }
+        else
+        {
+            $fdata= $this->upload->data();
+            $data['image']=$config['upload_path'].$fdata['file_name'];
+        }           
+      
+		$this->Admin_model->edit_product_save($id,$data);
+		$sdata=array();
+        $sdata['emessage']="Product Updated Successfully";
+        $this->session->set_userdata($sdata);
+		redirect('product');
+	}
+  
+  ======Model======
+  
+  public function edit_product_save($id,$data)
+	{
+
+		if(isset($id) && $id !=''){
+			$dataa = array('prod_id'=>$id);
+			$old_data = $this->db->get_where('product',$dataa)->row();
+			//print_r($old_data);exit;
+			if(isset($_FILES['userfile']['name']) && ($_FILES['userfile']['name'] != ''))
+			{
+				unlink($old_data->image);
+			}
+		}
+		if(isset($_FILES['userfile']['name']) && ($_FILES['userfile']['name'] != '') ){
+
+			$photo = $_FILES['userfile']['name'];
+
+			$this->db->set('image', $photo);
+		
+			$config['upload_path'] = 'assets/admin/product_image/';
+			$config['allowed_types'] = 'jpg|png|jpeg|gif|bmp';
+			$config['max_size']	= 1024;
+			$config['max_width'] = 2000;
+			$config['max_height'] = 900;
+			$config['file_name'] = $photo;
+			$config['overwrite'] = TRUE;
+
+			//print_r($config);exit();
+
+			$this->load->library('upload', $config);
+			// getting image name
+			$path = $photo;
+			$ext = pathinfo($path, PATHINFO_EXTENSION);
+			if(empty($path) && empty($ext)){
+				//$photo = e(post('photo'));
+			}else{
+				if ( ! $this->upload->do_upload('image')){
+					$status = str_replace(array("<p>","</p>"), "", $this->upload->display_errors());
+				}
+			}
+		}
+		
+		$this->db->where('prod_id',$id);
+		$this->db->update('product',$data);
+	}
