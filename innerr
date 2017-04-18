@@ -1,0 +1,7 @@
+SELECT
+FROM
+    epharmac_pharmacy.category
+    INNER JOIN epharmac_pharmacy.product 
+        ON (category.cat_id = product.prod_catid)
+    INNER JOIN epharmac_pharmacy.subcategory 
+        ON (subcategory.subcat_catid = product.prod_subcatid);
