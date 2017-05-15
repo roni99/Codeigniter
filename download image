@@ -1,0 +1,13 @@
+<td class="center">
+    <a href="<?php print base_url('assets/prescription_img/');?><?php print $prescription->prescription;?>" target="_blank">
+      <img src="<?php print base_url('assets/prescription_img/');?><?php print $prescription->prescription;?>" width="100" height="100">
+    </a>                                                
+     <a href="<?= base_url('Prescription_admin/download/'.$prescription->prescription); ?>">Download</a>
+</td>
+
+public function download( $photo )
+	{
+		$this->load->helper('download');
+		$name = "assets/prescription_img/$photo";
+		force_download($name,NUll);
+	}
