@@ -1,0 +1,25 @@
+====controller====
+public function checkUserLogin()
+    {
+        $userId = $this->input->post('reference_id', true);
+        $pass = md5($this->input->post('password', true));
+        $user = $this->user_model->check_user_login_info($userId, $pass);
+        if (count($user) > 0 && $user != null) {
+            $data['ref_id'] = $user->reference_id;
+            $data['user_id'] = $user->user_id;
+            $data['full_name'] = $user->full_name;
+            $data['u_image'] = $user->u_image;
+            $data['role'] = $user->role;
+            $this->session->set_userdata($data);
+            redirect('user');
+        }
+        $this->msg('Wrong Information');
+        redirect('home');
+    }
+    
+====Model=====
+public function check_user_login_info($ref_id, $pass)
+    {
+        $row = $this->db->select('reference_id,user_id,full_name,u_image,role')->from('tbl_users')->where('reference_id', $ref_id)->where('password', $pass)->where('is_active', 1)->get()->row();
+        return $row;
+    }
