@@ -1,0 +1,77 @@
+<?php
+//user_helper.php//
+
+function getAllcategory(){
+	
+    $ci =& get_instance();
+    $ci->load->database();
+    $data = $ci->db->select('*')->from('category')->get()->result();
+
+    foreach ($data as $d) {
+        echo '<option value="' . $d->cat_id . '" />  ' . $d->category . '<br />';
+    }
+}
+
+function getAllSubcatByCatId($cat_id){
+	
+    $ci =& get_instance();
+    $ci->load->database();
+    $data = $ci->db->select('*')->from('subcategory')->where('subcat_catid', $cat_id)->get()->result();
+    $out = '';
+    foreach ($data as $dd) {
+        $out .= '<option value="' . $dd->subcat_id . '" >  ' . $dd->subcategory . '</option><br />';
+    }
+    echo empty($out) ? 'Not Set' : $out;
+	
+}
+?>
+<?php
+//==Controller==//
+
+ public function getSubcatByCatId($id = null){
+        
+        if ($id != null) {
+            $this->load->helper('user_helper');
+            getAllSubcatByCatId($id);
+        }
+    }
+
+public function add_product(){
+
+        $this->load->helper('user_helper');
+        $this->load->view('merchant_corner/addproducts');
+    }
+	
+?>
+//==addproducts==//
+
+<tr>
+	<td align="right"><div align="right"><strong>Select Category</strong></div></td>
+	<td>&nbsp;</td>
+	<td>
+		<select class="form-control" name="category" id="category">
+			<option value="">Select Categoty</option>
+			<?php getAllcategory(); ?>
+		</select>
+	</td>
+</tr>
+<tr>
+	<td align="right"><div align="right"><strong>Select Sub Category</strong></div></td>
+	<td>&nbsp;</td>
+	<td>
+		<select name="subcat_name" id="subcat_name" class="form-control">
+			<option value="">Select Sub Categoty</option>
+		</select>
+	</td>
+</tr>   
+
+<script type="text/javascript">
+
+    $('#category').change(function () {
+        $.get("<?php echo base_url()?>merchant_controller/getSubcatByCatId/" + this.value, function (data, status) {
+            $('#subcat_name').html(data);
+        });
+        
+    });
+        
+</script>          
