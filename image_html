@@ -1,0 +1,52 @@
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+<script src="<?= base_url('assets/js/jquery.min.js'); ?>" type="text/javascript"></script>
+
+<form method="post" action="" enctype="multipart/form-data">
+	<div class="form-group">
+        <span id="av-image">
+            <img src="<?php print base_url('roni.jpg');?>" id="images"
+                 class="img-thumbnail">
+            <img src="" class="hidden" id="imageshidden">
+
+            <p style="font-size: 12px;"> Width * Height max : 300 px</p>
+            <p style="font-size: 12px;"> Size Max : 150 px</p>
+        </span>
+
+        <input type="file" class="hidden" name="u_image" onchange="readURL(this);"
+               id="uploadFile"/>
+
+        <div class="btn btn-info" id="uploadTrigger">Select Profile Image</div>
+    </div>
+</form>
+
+<script>
+    $("#uploadTrigger").click(function () {
+        $("#uploadFile").click();
+
+    });
+    function readURL(input) {
+
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $('#imageshidden')
+                    .attr('src', e.target.result);
+                var x = document.getElementById("imageshidden").width;
+                var y = document.getElementById("imageshidden").height;
+                if (x > 300 || y > 300) {
+                    alert('Image too large');
+                } else {
+                    $('#images')
+                        .attr('src', e.target.result)
+                        .width(150)
+                        .height(130);
+                }
+            };
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
