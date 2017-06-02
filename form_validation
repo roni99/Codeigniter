@@ -1,0 +1,95 @@
+//===form====//
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+<?php print form_open('Welcome/register');?>
+<div class="col-md-2"></div>
+<div class="col-md-8">
+  <div class="form-group">
+    <label for="">Name</label>
+    <input type="text" name="name" value="<?php print set_value('name');?>" class="form-control" id="name" ><?php print form_error('name');?>
+  </div>
+  <div class="form-group">
+    <label for="">Password:</label>
+    <input type="password" name="password" value="<?php print set_value('password');?>" class="form-control" id=""><?php print form_error('password');?>
+  </div>
+  <div class="form-group">
+    <label for="">Re-password:</label>
+    <input type="password" name="repassword" value="<?php print set_value('repassword');?>" class="form-control" id=""><?php print form_error('repassword');?>
+  </div>
+  <div class="form-group">
+    <label for="">Full Name</label>
+    <input type="text" name="fullname" value="<?php print set_value('fullname');?>" class="form-control" id="" ><?php print form_error('fullname');?>
+  </div>
+  <div class="form-group">
+    <label for="">Age</label>
+    <input type="text" name="age" value="<?php print set_value('age');?>" class="form-control" id="" ><?php print form_error('age');?>
+  </div>
+  <div class="form-group">
+    <label for="">Email</label>
+    <input type="text" name="email" value="<?php print set_value('email');?>" class="form-control" id="" ><?php print form_error('email');?>
+  </div>
+  <div class="form-group">
+    <label for="">Website</label>
+    <input type="text" name="website" value="<?php print set_value('website');?>" class="form-control" id="name" ><?php print form_error('website');?>
+  </div>
+
+  <button type="submit" class="btn btn-default">Submit</button>
+  </div>
+<div class="col-md-2"></div>
+<?php print form_close();?>
+
+//====Controller====//
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+class Welcome extends CI_Controller {
+	public function index()
+	{	
+		$this->load->view('registration_form');
+	}
+	public function register()
+	{
+		$this->form_validation->set_rules('name','Name','trim|required|min_length[5]|max_length[12]|callback_check_username');
+		$this->form_validation->set_rules('password','Password','trim|required|min_length[5]|max_length[20]');
+		$this->form_validation->set_rules('repassword','Re-Password','trim|required|min_length[5]|max_length[20]|matches[password]');
+		$this->form_validation->set_rules('fullname','FullName','trim|required');
+		$this->form_validation->set_rules('age','Age','trim|required|integer|greater_than[18]|less_than[30]');
+		$this->form_validation->set_rules('email','Email','trim|required|valid_email');
+		$this->form_validation->set_rules('website','Website','trim|required|callback_valid_url');
+
+		if($this->form_validation->run()==FALSE)
+		{
+			$this->load->view('registration_form');
+		}
+		else
+		{
+			$data['name']=$this->input->post('name');
+			$data['password']=$this->input->post('password');
+			$data['fullname']=$this->input->post('fullname');
+			$data['age']=$this->input->post('age');
+			$data['email']=$this->input->post('email');
+			$data['website']=$this->input->post('website');
+			
+			$this->load->view('success',$data);
+		}
+	}
+	public function check_username($str)
+	{
+		if($str == 'ronii')
+		{
+			$this->form_validation->set_message('check_username','Username is already Use');
+			return FALSE;
+		}
+		return TRUE;
+	}
+	public function valid_url($str)
+	{
+		$pattern="|^http(s)?://[a-z0-9-]+(.[a-z0-9-]+)*(:[0-9]+)?(/.*)?$|i";
+		if(!preg_match($pattern,$str))
+		{
+			$this->form_validation->set_message('valid_url','Website link is not Valid');
+			return FALSE;
+		}
+		return TRUE;
+	}
+}
