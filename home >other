@@ -1,0 +1,14 @@
+<?php 
+$url = current_url();
+$end = explode('/', $url);
+$length = sizeof($end);
+$lasttwo=$end[$length-2].' > '.$end[$length-1];
+echo '<a href="">'.$lasttwo.'</a>';
+?>
+
+
+<?php 
+	$url = current_url();
+	$end = end((explode('/', $url)));
+	echo '<a href="#">'.$end.'</a>';
+	?>
