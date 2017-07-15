@@ -1,0 +1,13 @@
+<?php
+$counters=$this->db->select('*')->from('visitor_counter')->get()->row();
+$count=$counters->counter;
+if(empty($count)){
+$count = 1;
+$sql1= $this->db->insert('visitor_counter',$count);
+}
+echo "visitors No. "; 
+echo $count; 
+$plus_counter=$count+1; 
+$sql2= $this->db->set("counter",$plus_counter)->update('visitor_counter');
+exit();
+?>
